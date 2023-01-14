@@ -2934,6 +2934,32 @@ IBoundUDPSocket *OpenUDPSocketBoundToHost( const netadr_t &adrRemote, CRecvPacke
 	return pBoundSock;
 }
 
+IBoundUDPSocket *OpenUDPSocketBoundToHostLocalPort( const netadr_t &adrRemote, int localPort, CRecvPacketCallback callback, SteamNetworkingErrMsg &errMsg )
+{
+	SteamNetworkingGlobalLock::AssertHeldByCurrentThread();
+
+	// Select local address to use.
+	// Since we know the remote host, let's just always use a single-stack socket
+	// with the specified family
+	int nAddressFamilies = ( adrRemote.GetType() == k_EIPTypeV6 ) ? k_nAddressFamily_IPv6 : k_nAddressFamily_IPv4;
+
+	// Create a socket, bind it to the desired local address
+	CDedicatedBoundSocket *pTempContext = nullptr; // don't yet know the context
+	SteamNetworkingIPAddr localAddress;
+	localAddress.Clear();
+	localAddress.m_port = localPort;
+	CRawUDPSocketImpl *pRawSock = OpenRawUDPSocketInternal( CRecvPacketCallback( DedicatedBoundSocketCallback, pTempContext ), errMsg, &localAddress, &nAddressFamilies );
+	if ( !pRawSock )
+		return nullptr;
+
+	// Return wrapper interface that can only talk to this remote host
+	CDedicatedBoundSocket *pBoundSock = new CDedicatedBoundSocket( pRawSock, adrRemote );
+	pRawSock->m_callback.m_pContext = pBoundSock;
+	pBoundSock->m_callback = callback;
+
+	return pBoundSock;
+}
+
 bool CreateBoundSocketPair( CRecvPacketCallback callback1, CRecvPacketCallback callback2, IBoundUDPSocket **ppOutSockets, SteamNetworkingErrMsg &errMsg )
 {
 	SteamNetworkingGlobalLock::AssertHeldByCurrentThread();

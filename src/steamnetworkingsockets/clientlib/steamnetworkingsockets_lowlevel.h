@@ -221,6 +221,7 @@ protected:
 /// Get a socket to talk to a single host.  The underlying socket won't be
 /// shared with anybody else.
 extern IBoundUDPSocket *OpenUDPSocketBoundToHost( const netadr_t &adrRemote, CRecvPacketCallback callback, SteamDatagramErrMsg &errMsg );
+extern IBoundUDPSocket *OpenUDPSocketBoundToHostLocalPort( const netadr_t &adrRemote, int localPort, CRecvPacketCallback callback, SteamDatagramErrMsg &errMsg );
 
 /// Create a pair of sockets that are bound to talk to each other.
 extern bool CreateBoundSocketPair( CRecvPacketCallback callback1, CRecvPacketCallback callback2, IBoundUDPSocket **ppOutSockets, SteamDatagramErrMsg &errMsg );

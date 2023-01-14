@@ -1356,6 +1356,10 @@ enum ESteamNetworkingConfigValue
 	/// generic platform UI.  (Only available on Steam.)
 	k_ESteamNetworkingConfig_EnableDiagnosticsUI = 46,
 
+
+	/// [connection int32] Local address port. Used to facilitate UDP hole punching with external code scenarios.
+	k_ESteamNetworkingConfig_LocalAddressPort = 51,
+
 //
 // Simulating network conditions
 //

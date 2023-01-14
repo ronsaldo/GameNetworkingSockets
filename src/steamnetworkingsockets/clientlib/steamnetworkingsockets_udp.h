@@ -170,6 +170,7 @@ public:
 	IBoundUDPSocket *m_pSocket;
 
 	bool BConnect( const netadr_t &netadrRemote, SteamDatagramErrMsg &errMsg );
+	bool BConnectWithLocalPort( const netadr_t &netadrRemote, int localPort, SteamDatagramErrMsg &errMsg );
 	bool BAccept( CSharedSocket *pSharedSock, const netadr_t &netadrRemote, SteamDatagramErrMsg &errMsg );
 
 	void SendConnectOK( SteamNetworkingMicroseconds usecNow );
@@ -209,6 +210,9 @@ public:
 
 	/// Initiate a connection
 	bool BInitConnect( const SteamNetworkingIPAddr &addressRemote, int nOptions, const SteamNetworkingConfigValue_t *pOptions, SteamDatagramErrMsg &errMsg );
+
+	/// Initiate a connection
+	bool BInitConnectWithLocalPort( const SteamNetworkingIPAddr &addressRemote, int localPort, int nOptions, const SteamNetworkingConfigValue_t *pOptions, SteamDatagramErrMsg &errMsg );
 
 	/// Accept a connection that has passed the handshake phase
 	bool BBeginAccept(

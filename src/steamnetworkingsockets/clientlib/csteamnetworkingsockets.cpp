@@ -1110,15 +1110,35 @@ HSteamNetConnection CSteamNetworkingSockets::ConnectByIPAddress( const SteamNetw
 		}
 	#endif
 
+	// Some UDP holepunching scenarios might require using a specific local port.
+	int localPort = -1;
+	for(int i = 0; i < nOptions; ++i)
+	{
+		if(pOptions[i].m_eValue == k_ESteamNetworkingConfig_LocalAddressPort)
+			localPort = pOptions[i].m_val.m_int32;
+	}
+
 	CSteamNetworkConnectionUDP *pConn = new CSteamNetworkConnectionUDP( this, connectionLock );
 	if ( !pConn )
 		return k_HSteamNetConnection_Invalid;
 	SteamDatagramErrMsg errMsg;
-	if ( !pConn->BInitConnect( address, nOptions, pOptions, errMsg ) )
+	if(localPort < 0)
 	{
-		SpewError( "Cannot create IPv4 connection.  %s", errMsg );
-		pConn->ConnectionQueueDestroy();
-		return k_HSteamNetConnection_Invalid;
+		if ( !pConn->BInitConnectWithLocalPort( address, localPort, nOptions, pOptions, errMsg ) )
+		{
+			SpewError( "Cannot create IPv4 connection.  %s", errMsg );
+			pConn->ConnectionQueueDestroy();
+			return k_HSteamNetConnection_Invalid;
+		}
+	}
+	else
+	{
+		if ( !pConn->BInitConnect( address, nOptions, pOptions, errMsg ) )
+		{
+			SpewError( "Cannot create IPv4 connection.  %s", errMsg );
+			pConn->ConnectionQueueDestroy();
+			return k_HSteamNetConnection_Invalid;
+		}
 	}
 
 	return pConn->m_hConnectionSelf;

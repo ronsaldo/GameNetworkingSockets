@@ -2174,6 +2174,10 @@ bool CSteamNetworkingUtils::SetConfigValue( ESteamNetworkingConfigValue eValue,
 			SpewWarning( "MTU_DataSize is readonly" );
 			return false;
 
+		case k_ESteamNetworkingConfig_LocalAddressPort:
+			// This is ignored in this location.
+			return true;
+
 		case k_ESteamNetworkingConfig_ConnectionUserData:
 		{
 

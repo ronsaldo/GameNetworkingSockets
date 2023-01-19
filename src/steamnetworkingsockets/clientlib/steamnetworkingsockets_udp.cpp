@@ -1226,7 +1226,7 @@ bool CSteamNetworkConnectionUDP::BInitConnectWithLocalPort( const SteamNetworkin
 
 	// Create transport.
 	CConnectionTransportUDP *pTransport = new CConnectionTransportUDP( *this );
-	if ( !pTransport->BConnect( netadrRemote, errMsg ) )
+	if ( !pTransport->BConnectWithLocalPort( netadrRemote, localPort, errMsg ) )
 	{
 		pTransport->TransportDestroySelfNow();
 		return false;

@@ -1122,7 +1122,7 @@ HSteamNetConnection CSteamNetworkingSockets::ConnectByIPAddress( const SteamNetw
 	if ( !pConn )
 		return k_HSteamNetConnection_Invalid;
 	SteamDatagramErrMsg errMsg;
-	if(localPort < 0)
+	if(localPort >= 0)
 	{
 		if ( !pConn->BInitConnectWithLocalPort( address, localPort, nOptions, pOptions, errMsg ) )
 		{
